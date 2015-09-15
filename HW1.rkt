@@ -17,7 +17,7 @@
 	                     (else 
 	                      (writeln (hedge))
 	                      (whos-on-first-loop new-context)))))))))
-	                      
+
 (define cue-part
   (lambda (pair)
     (car pair)))
@@ -33,7 +33,7 @@
 (define try-strong-cues-helper
   (lambda (list-of-pairs sentence)
     (cond ((null? list-of-pairs) '())
-          ((any-good-fragments? sentence(cue-part(car list-of-pairs)))
+          ((any-good-fragments? sentence (cue-part(car list-of-pairs)))
            (select-at-random(response-part(car list-of-pairs))))
           (else (try-strong-cues-helper(cdr list-of-pairs) sentence)))))
 
@@ -49,37 +49,45 @@
 	       ((third base) (hes on third)) )
 	   ))
 
+(define try-weak-cues
+  (lambda (sentence context)
+    (try-weak-cues-helper *weak-cues* sentence context)))
+
+(define try-weak-cues-helper
+  (lambda (list-of-pairs sentence context)
+    (cond ((null? list-of-pairs) '())
+          ((any-good-fragments? sentence (cue-part (car list-of-pairs)))
+           (context-checker (response-part (car list-of-pairs)) context))
+          (else (try-weak-cues-helper (cdr list-of-pairs) sentence context)))))
+
+(define context-checker
+  (lambda (list-of-pairs context)
+    (cond ((null? list-of-pairs) '())
+          ((exists? (car context) (cue-part list-of-pairs)) (select-at-random (response-part list-of-pairs)))
+          (else (context-checker (cdr list-of-pairs) context)))))
+
 (define get-context
   (lambda (sentence old-context)
-    old-context))
+    (letrec ((helper
+              (lambda (sentence context-list old-context)
+                (cond ((null? context-list) old-context)
+                      ((exists? (car context-list) sentence) (car context-list))
+                      (else (helper sentence (cdr context-list) old-context))))))
+      (helper sentence *contexts* old-context))))
+
+(define exists?
+  (lambda (item ls)
+    (cond ((null? ls) #f)
+          ((equal? item (car ls)) #t)
+          (else (exists? item (cdr ls))))))
+
+(define *contexts*
+  '(first-base second-base third-base))
 
 (define *context-words*
 	  `( ( ((first)) first-base )
 	     ( ((second)) second-base )
 	     ( ((third)) third-base )))
-	    
-(define try-weak-cues
-  (lambda (sentence context)
-    ((try-weak-cues-helper *weak-cues* sentence))))
-
-(define try-weak-cues-helper
-  (lambda (list-of-pairs sentence context)
-    (cond ((null? list-of-pairs) '())
-          ((any-good-fragments? sentence(cue-part(car list-of-pairs)))
-           (select-at-random(response-part(car list-of-pairs))))
-          (else (try-strong-cues-helper(cdr list-of-pairs) sentence)))))
-
-(define get-context
-  (lambda (sentence old-context)
-    (cond ((null? *contexts*) old-context)
-          ((exists? (car *contexts*) sentence) (car *contexts*))
-          (else (cdr *contexts*)))))
-
-(define exists?
-  (lambda (item ls)
-    (cond ((null? ls) #f)
-          ((equal? item (car ls) #t))
-          (else (exists? item (cdr ls))))))
 
 (define *weak-cues*
   '( ( ((who) (whos) (who is))
