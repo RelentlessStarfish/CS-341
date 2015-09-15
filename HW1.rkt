@@ -53,6 +53,34 @@
   (lambda (sentence old-context)
     old-context))
 
+(define *context-words*
+	  `( ( ((first)) first-base )
+	     ( ((second)) second-base )
+	     ( ((third)) third-base )))
+	    
+(define try-weak-cues
+  (lambda (sentence context)
+    ((try-weak-cues-helper *weak-cues* sentence))))
+
+(define try-weak-cues-helper
+  (lambda (list-of-pairs sentence context)
+    (cond ((null? list-of-pairs) '())
+          ((any-good-fragments? sentence(cue-part(car list-of-pairs)))
+           (select-at-random(response-part(car list-of-pairs))))
+          (else (try-strong-cues-helper(cdr list-of-pairs) sentence)))))
+
+(define get-context
+  (lambda (sentence old-context)
+    (cond ((null? *contexts*) old-context)
+          ((exists? (car *contexts*) sentence) (car *contexts*))
+          (else (cdr *contexts*)))))
+
+(define exists?
+  (lambda (item ls)
+    (cond ((null? ls) #f)
+          ((equal? item (car ls) #t))
+          (else (exists? item (cdr ls))))))
+
 (define *weak-cues*
   '( ( ((who) (whos) (who is))
        ((first-base)
