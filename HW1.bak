@@ -66,40 +66,28 @@
           ((exists? (car context) (cue-part list-of-pairs)) (select-at-random (response-part list-of-pairs)))
           (else (context-checker (cdr list-of-pairs) context)))))
 
-;Extracts the context from the sentence (is a helper function for the get-context function
-(define extract-context
-  (lambda (sentence context-list old-context)
-                (cond ((null? context-list) old-context)
-                      ((my-subsequence? (context-key (car context-list)) sentence) (context-result (car context-list)))
-                      (else (extract-context sentence (cdr context-list) old-context)))))
-
-(define *context-words*
-	  '( ( ((first)) first-base )
-	     ( ((second)) second-base )
-	     ( ((third)) third-base )))
-
-;Pulls the list containing the word to be searched for within the sentence from the context list
-(define context-key
-  (lambda (context-pair)
-    (cond ((null? context-pair) '())
-          (car (car (car context-pair))))))
-
-;Pulls the list containing the context that should result if the respective key is found in the sentence
-(define context-result
-  (lambda (context-pair)
-    (cond ((null? context-pair) '())
-          (cdr (cdr context-pair)))))
-    
-
 (define get-context
-  (lambda (sentence old-context)   
-      (extract-context sentence *context-words* old-context)))
+  (lambda (sentence old-context)
+    (letrec ((helper
+              (lambda (sentence context-list old-context)
+                (cond ((null? context-list) old-context)
+                      ((exists? (car context-list) sentence) (car context-list))
+                      (else (helper sentence (cdr context-list) old-context))))))
+      (helper sentence *contexts* old-context))))
 
 (define exists?
   (lambda (item ls)
     (cond ((null? ls) #f)
           ((equal? item (car ls)) #t)
           (else (exists? item (cdr ls))))))
+
+(define *contexts*
+  '(first-base second-base third-base))
+
+(define *context-words*
+	  `( ( ((first)) first-base )
+	     ( ((second)) second-base )
+	     ( ((third)) third-base )))
 
 (define *weak-cues*
   '( ( ((who) (whos) (who is))
@@ -121,25 +109,9 @@
 	((now youre talking) (you got it))))
    ))
 
-;list of cues that will end the conversation
-(define *end-conv-cues*
-  '(
-    (goodbye)
-    (Im done)
-    (forget it)
-    )
-  )
-
-(define check-for-end-cue
-  (lambda (sentence cue-list)
-    (cond ((null? cue-list) #f)
-          ((my-subsequence? (car cue-list) sentence) #t)
-          (else (check-for-end-cue sentence (cdr cue-list))))))
-
 (define wants-to-end?
   (lambda (sentence)
-    (cond ((null? sentence) #f)
-    (else (check-for-end-cue sentence *end-conv-cues*)))))
+    '()))
 
 (define wrap-it-up
   (lambda ()
@@ -189,3 +161,5 @@
           ((null? ls2) #f)
           ((equal? (car ls1) (car ls2)) (my-prefix? (cdr ls1) (cdr ls2)))
           (else #f))))
+
+
