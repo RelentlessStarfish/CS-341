@@ -1,4 +1,5 @@
 #lang racket
+
 (define smallest
   (λ (ls less?)
     (letrec ((smaller
@@ -17,8 +18,6 @@
                       ((cons (smallest ls less?) (selection-sort (remove (smallest ls less?) ls) less?)))))))
       (sort ls less?))))
 
-; Nick you can ignore this part if you want. I don't care. It was fun anyways. Plus I don't want to do circuits!!!
-
 (define accumulate
   (λ (op base-value func ls)
     (cond ((null? ls) base-value)
@@ -28,6 +27,6 @@
   (λ (item ls)
     (accumulate + 0 (λ (x) (if (= x item) 1 0)) ls)))
 
-; I will leave the last one to you.
-
-; P.s. "λ" looks much better than "lambda" lol 
+(define frequency-sort
+  (λ (ls)
+    (selection-sort ls (λ (x y) (< (frequency x ls) (frequency y ls))))))
