@@ -1,5 +1,9 @@
 #lang racket
 
+(test-me
+ (lambda ()
+   (whos-on-first-loop '())))
+
 (define whos-on-first-loop 
 	  (lambda (old-context)
 	    (let ((costellos-line (read)))
