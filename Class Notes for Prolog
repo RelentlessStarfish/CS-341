@@ -1,0 +1,111 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+10/8/15
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% my_sort(+Xs, -SortedXs)
+% the input is a list of numbers Xs.
+% Returns in the list Sorted Xs the list Xs in ascending order.
+
+my_sort([],[]).
+my_sort([X|Xs], Yss) :-
+	my_sort(Xs, Zs), my_insert(X, Zs, Ys).
+
+% my_insert(+X, +SortedXs, -Ys)
+% Inserts the item X into a sorted list of numbers SortedXs and returns the result in list Ys.
+
+my_insert(X, [], [X]).
+my_insert(X, [A|As], [X,A|As]) :-
+	X<A.
+my_insert(X,[A|As], [A|Bs]) :-
+	\+ X < A, my_insert(X, As, Bs).
+
+% sorted(+Xs)
+% Checks if the input list of numbers Xs is sorted in ascending order.
+
+sorted([]).
+sorted([X], [X]).
+sorted([X, Y|Xs]) :-
+	X < Y, sorted(Xs).
+
+%shuffle(+Xs, -Ys)
+%shuffles the input list Xs and returns the answer in the list Ys.
+
+shuffle([],[]).
+shuffle([X|Xs], Ys) :-
+	append(As,Bs,Xs), shuffle(As, ShuffledAs), shuffle(Bs, shuffledBs),
+	append(ShuffledAs, [X|ShuffledBs], Y).
+
+% crazy_sort(+Xs, -Ys)
+% Sorts the input list of numbers Xs into the list Ys.
+
+crazy_sort(Xs, Ys) :-
+	shuffle(Xs, Ys), sorted(Ys).
+
+% Merge sort
+% Sorts the input list of numbers Xs using MergeSort and returns the answer in the list Ys.
+
+Msort([],[]).
+msort(Xs,Ys): -
+	append(Ls, Rs, Xs), length(Ls, L), length(Rs, R),
+	Diff is L-R, abs(Diff, AbsDiff), AbsDiff < 2,
+	msort(Ls, SortedLs), msort(Rs, SortedRs),
+	merge(SortedLs, SortedRs, Ys).
+
+%merge(+Xs, +Ys, -Zs)
+% Merges the two sorted lists of numbers, Xs and Ys, in the list Zs.
+
+merge([],Ys, Ys).
+merge(Xs, [], Xs).
+merge([X|Xs], [Y|Ys], [X|Zs) :-
+	X < Y, merge(Xs, Y|Ys], Zs).
+merge([X|Xs], [Y|Ys], [Y|Zs]) :-
+	\+ X < Y, merge([X|Xs], Ys, Zs).
+
+%Tino recommends running the following on Polaris due to the n! Runtime.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% map(+Func, +Xs, -Ys)
+% Maps the operator Func onto the list Xs and returns the answer in the list Ys
+
+map(Func, [], []).
+map(Func, [X|Xs], [Y|Ys]) :-
+	P =.. [Func, X] is eval(P), map(Func, Xs, Ys)	% Here we are building an expression
+
+% .. means “equality test”. Basically, just accept the weird ass syntax and move on.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+10/13/15
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Annoucements
+-Thursday 6-7 PM: Make up class (optional)
+--Will cover A2 and A3
+
+Turn in Quiz 2 by Thursday 10/15/15
+
+NEXT WEEK NO CLASS :D
+
+Next topic: building an interpreter
+
+%Fixing Merge Sort
+
+msort([],[]).
+msort([X],[X])
+msort(Xs, Ys) :-
+	append(Ls, Rs, Xs), length(Ls,L), length(Rs,R),
+	Diff is L-R, abs(Diff, AbsDiff), AbsDiff < 2,
+	msort(Ls, SortedLs), msort(Rs, SortedRs),
+	merge(SortedLs, SortedRs, Ys).
+
+%split_half(+Xs, -As, -Bs)
+%Splits the list Xs into two nearly equal-length sublists As and Bs.
+%
+
+split_half([],[],[]).
+split_half([X],[],[X]).
+split_half([X,Y],[X],[Y]).
+split_half([X,Y|Zs], [X|As], [Y|Bs]) :-
+	split_half(Zs, As, Bs).
+
+
