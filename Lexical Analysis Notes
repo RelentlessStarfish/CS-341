@@ -10,7 +10,9 @@ Specify Precendence & Associativity Rules:
 Version 1:
 				Precedence	Associativity
 [ E -> E '+' T | T		low		left
-[ T -> T '*' F | F		medium		left
+[ T -> T '*' F | F		medium		left		<-- Left-recursion problem
 [ F -> '(' E ')' | NUM		high		____
 
 Recursive Descent Parser
+
+T -> T -> T ... this is called left-recursion
