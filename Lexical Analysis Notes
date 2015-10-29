@@ -1,0 +1,16 @@
+
+*** 10/29/15 ***
+
+Ambiguous grammar
+
+Version 0: E -> E '+' E | E '*' E | '(' E ')' | NUM
+
+Specify Precendence & Associativity Rules:
+
+Version 1:
+				Precedence	Associativity
+[ E -> E '+' T | T		low		left
+[ T -> T '*' F | F		medium		left
+[ F -> '(' E ')' | NUM		high		____
+
+Recursive Descent Parser
