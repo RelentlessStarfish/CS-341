@@ -91,9 +91,9 @@
   ; example:
   ;  (1 . 1) (1 . 2) (2 . 1) (1 . 3) (3 . 1) (1 . 4) (2 . 3) (3 . 2) (4 . 1) (1 . 5) ... 
   (define rationals
-    ; [FILL IN]
-    empty-stream)
-  
+    (let helper ((a 1) (b 1))
+      (cond ((= b 0) (stream-cons (list 1 a) (helper 1 (+ a 1))))
+            (else (stream-cons (list a b) (helper (+ a 1) (- b 1)))))))
   
   ;;;;;;;;;;;
   ; test jig
