@@ -1,0 +1,76 @@
+NOTES 11/06/15
+
+HW 2
+
+Check to make sure you can read a file into a stream and then immediately output the file into the stream.
+
+Remove-extra-spaces: look for multiple spaces and compress it into one.
+
+SOME OF THE CODE IS JUST MIT SCHEME, NOT RACKET.
+
+cons-stream should be stream-cons
+
+%%%%%%%%%%% HW 3 %%%%%%%%%%%%%%%%%
+
+% 1. Copy: A |- A
+deduce(S,X,N) :-
+	try(S,X,N, '{COPY}'),
+	member(false, S)
+	catch(S,X,N, '{COPY}').
+
+%2. Falsehood Elimination: F |- A
+deduce(S,X,N) :-
+	try(S,X,N, '{FALSE-ELIM}'),
+	member(false, S),
+	catch(S,X,N, '{FALSE-ELIM}').
+
+%3. Conjunction Introduction: {A,B} |- A&B
+deduce(S, and(X,Y), N) :-
+	try(S,and(X,Y),N, '{AND-INTRO}'),
+	conjective_introduction(S,and(X,Y), N),
+	catch(S, and(X,Y), N, '{AND-INTRO}').
+
+%4. Conjunction Elimination: A&B | -A, A&B | -B
+deduce(S,X,N) :-
+	try(S,X,N, '{AND-ELIM}'),
+	conjunctive_elimination(S,X,N),
+	catch(S,X,N, '{AND-ELIM}').
+
+conjunctive_elimination(S,X,N) :-
+	and_list_member(X,S).
+
+conjunctive_elimination(S,X,N) :-
+	and_tree_memeber(X,S).
+
+%member_and(+X, +S)
+%checks if term X is part of an AND structure of a member of list S.
+and_list_memeber(X, [S1|S]) :- and_tree_member(X, S1).
+%%FUCK
+
+% 5. Disjunction Introduction: A |- AvB, B |- AvB
+deduce(S,or(X,Y),N) :-
+	try(S, or(X,Y), N, '{OR-INTRO}').
+	disjunctive_introduction(S, or(X,Y), N),
+	catch(S,or(X,Y), N, '{OR-INTRO}').
+
+disjunctive_introduction(S, or(X,Y), N) :-
+	member(X,S).
+
+disjunctive_introduction(S, or(X,Y)
+%%FUCK
+
+try(S,X,N,Comment) :-
+	pause.
+%	indent(N),
+%	write('Try: '),
+%	write(S), write(' |-')
+%%FUCK
+
+indent(N) :- \+ N > 0.
+inent(N) :- N > 0, write('.'), N1 is N-1, indent(N1).
+
+test_halfdist :-
+	deduce([a], and(or(a,b), or (a,c)
+
+
+%%%%%%%%%%%% ASSignment 4 (HW4) %%%%%%%%
