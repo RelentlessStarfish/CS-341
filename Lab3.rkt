@@ -25,7 +25,7 @@
 
 (define frequency
   (λ (item ls)
-    (accumulate + 0 (λ (x) (if (= x item) 1 0)) ls)))
+    (accumulate + 0 (λ (x) (if (equal? x item) 1 0)) ls)))
 
 (define frequency-sort
   (λ (ls)
